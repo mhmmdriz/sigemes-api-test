@@ -46,7 +46,7 @@ export class MidtransService implements PaymentGatewayInterface {
             ]
         });
 
-        console.log(response);
+        // console.log(response);
 
         return response.token;
     }

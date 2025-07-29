@@ -8,6 +8,7 @@ import { File } from "../domain/interface/library/file";
 import { DbTransactionInterface } from "../domain/interface/repository/db-transaction";
 import { RentRepositoryInterface } from "../domain/interface/repository/rent";
 import { ReviewRepositoryInterface } from "../domain/interface/repository/review";
+import { Pagination } from "../domain/entity/pagination";
 
 export class ReviewUsecase {
     constructor(
@@ -17,16 +18,32 @@ export class ReviewUsecase {
         private objectStorageService: ObjectStorageInterface,
     ) { }
 
-    public async getReviewsByCityHallId(cityHallId: number): Promise<Review[]> {
-        const reviews: Review[] = await this.reviewRepository.getReviewsByCityHallId(cityHallId);
+    public async getReviewsByCityHallId(cityHallId: number, page: number | undefined, limit: number | undefined): Promise<{ pagination: Pagination, reviews: Review[] }> {
+        const pagination: Pagination = new Pagination();
 
-        return reviews;
+        const count: number = await this.reviewRepository.getCountCityHallReviews(cityHallId); 
+        pagination.totalData = count;
+        pagination.page = page || 1;
+        pagination.limit = limit || 10;
+        pagination.lastPage = Math.ceil(count / pagination.limit);
+
+        const reviews: Review[] = await this.reviewRepository.getReviewsByCityHallId(cityHallId, pagination.page, pagination.limit);
+
+        return { pagination, reviews };
     }
 
-    public async getReviewsByGuesthouseRoomId(guesthouseRoomId: number): Promise<Review[]> {
-        const reviews: Review[] = await this.reviewRepository.getReviewsByGuesthouseRoomId(guesthouseRoomId);
+    public async getReviewsByGuesthouseRoomId(guesthouseRoomId: number, page: number | undefined, limit: number | undefined): Promise<{ pagination: Pagination, reviews: Review[] }> {
+        const pagination: Pagination = new Pagination();
 
-        return reviews;
+        const count: number = await this.reviewRepository.getCountGuesthouseRoomReviews(guesthouseRoomId); 
+        pagination.totalData = count;
+        pagination.page = page || 1;
+        pagination.limit = limit || 10;
+        pagination.lastPage = Math.ceil(count / pagination.limit);
+
+        const reviews: Review[] = await this.reviewRepository.getReviewsByGuesthouseRoomId(guesthouseRoomId, pagination.page, pagination.limit);
+
+        return { pagination, reviews };
     }
 
     public async getReviewByRentId(rentId: number): Promise<Review> {

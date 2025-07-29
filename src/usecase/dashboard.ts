@@ -33,9 +33,13 @@ export class DashboardUsecase {
         return await this.paymentRepository.getRevenue(startOfYear, endOfYear);
     }
 
-    public async getFinancialReportSummary(date: Date): Promise<FinancialReportSummary[]> {
-        const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
-        const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0, 23, 59, 59, 999);
+    public async getFinancialReportSummary(startDate: Date, endDate: Date): Promise<FinancialReportSummary[]> {
+        if (startDate > endDate) {
+            throw new Error("Start date cannot be after end date");
+        }
+
+        // Buat endDate menjadi jam 23:59:59.999 untuk mencakup seluruh hari terakhir
+        endDate.setUTCHours(23, 59, 59, 999);
 
         const guesthouses: Guesthouse[] = await this.guesthouseRepository.getAllGuesthousesWithPricing();
         const cityHalls: CityHall[] = await this.cityHallRepository.getAllCityHallsWithPricing();
@@ -61,7 +65,7 @@ export class DashboardUsecase {
             const summary: {
                 count: number,
                 revenue: number,
-            } = await this.paymentRepository.getRevenueAndCountByGuesthousePricingIds(pricingIds, startOfMonth, endOfMonth);
+            } = await this.paymentRepository.getRevenueAndCountByGuesthousePricingIds(pricingIds, startDate, endDate);
             revenueSummary.push({
                 propertyName: guesthouseName,
                 transactionCount: summary.count,
@@ -74,7 +78,7 @@ export class DashboardUsecase {
             const summary: {
                 count: number,
                 revenue: number,
-            } = await this.paymentRepository.getRevenueAndCountByCityHallPricingIds(pricingIds, startOfMonth, endOfMonth);
+            } = await this.paymentRepository.getRevenueAndCountByCityHallPricingIds(pricingIds, startDate, endDate);
             revenueSummary.push({
                 propertyName: cityHallName,
                 transactionCount: summary.count,

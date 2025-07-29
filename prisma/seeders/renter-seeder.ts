@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt'
 const prisma: PrismaClient = new PrismaClient()
 
 export async function seedRenters(): Promise<void> {
-    const hashedPassword: string = await bcrypt.hash('password', 10)
+    const hashedPassword: string = await bcrypt.hash('password', 7);
     const renterData = [
         {
             fullname: "Alice Jones",

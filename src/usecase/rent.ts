@@ -305,7 +305,8 @@ export class RentUsecase {
             const renterPhone: string = createdRent.renter.phoneNumber;
 
             const newPaymentId: string = this.cryptoService.generateUUIDv4();
-            const token: string = await this.paymentGatewayService.createTransaction(newPaymentId, renterName, renterEmail, renterPhone, itemName, itemType, itemCategory, totalPrice, actualTotalPrice, paymentGatewayTransactionFee);
+            // const token: string = await this.paymentGatewayService.createTransaction(newPaymentId, renterName, renterEmail, renterPhone, itemName, itemType, itemCategory, totalPrice, actualTotalPrice, paymentGatewayTransactionFee);
+            const token: string = "dummy-token"; // Replace with actual token generation logic
             if (!token) {
                 throw new ResponseError("Failed to create transaction", 500);
             }

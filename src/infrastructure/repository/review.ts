@@ -11,8 +11,34 @@ export class ReviewRepository implements ReviewRepositoryInterface {
         this.prisma = prisma;
     }
 
-    public async getReviewsByCityHallId(cityHallId: number): Promise<Review[]> {
+    public async getCountCityHallReviews(cityHallId: number): Promise<number> {
+        return await this.prisma.review.count({
+            where: {
+                rent: {
+                    cityHallPricing: {
+                        cityHallId: cityHallId,
+                    }
+                }
+            }
+        });
+    }
+
+    public async getCountGuesthouseRoomReviews(guesthouseRoomId: number): Promise<number> {
+        return await this.prisma.review.count({
+            where: {
+                rent: {
+                    guesthouseRoomPricing: {
+                        guesthouseRoomId: guesthouseRoomId,
+                    }
+                }
+            }
+        });
+    }
+
+    public async getReviewsByCityHallId(cityHallId: number, page: number, limit: number): Promise<Review[]> {
         const reviews: Review[] = await this.prisma.review.findMany({
+            skip: (page - 1) * limit,
+            take: limit,
             where: {
                 rent: {
                     cityHallPricing: {
@@ -30,13 +56,18 @@ export class ReviewRepository implements ReviewRepositoryInterface {
                 },
                 reviewReply: true,
             },
+            orderBy: {
+                createdAt: 'desc',
+            },
         }) as Review[];
 
         return reviews;
     }
 
-    public async getReviewsByGuesthouseRoomId(guesthouseRoomId: number): Promise<Review[]> {
+    public async getReviewsByGuesthouseRoomId(guesthouseRoomId: number, page: number, limit: number): Promise<Review[]> {
         const reviews: Review[] = await this.prisma.review.findMany({
+            skip: (page - 1) * limit,
+            take: limit,
             where: {
                 rent: {
                     guesthouseRoomPricing: {
@@ -53,6 +84,9 @@ export class ReviewRepository implements ReviewRepositoryInterface {
                     }
                 },
                 reviewReply: true,
+            },
+            orderBy: {
+                createdAt: 'desc',
             },
         }) as Review[];
 

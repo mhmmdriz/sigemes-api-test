@@ -127,7 +127,7 @@ export class PaymentRepository implements PaymentRepositoryInterface {
             where: {
                 paymentConfirmedAt: {
                     gte: startDate,
-                    lt: endDate
+                    lte: endDate
                 },
                 status: "dibayar",
                 Rent: {
@@ -155,7 +155,7 @@ export class PaymentRepository implements PaymentRepositoryInterface {
             where: {
                 paymentConfirmedAt: {
                     gte: startDate,
-                    lt: endDate
+                    lte: endDate
                 },
                 status: "dibayar",
                 Rent: {

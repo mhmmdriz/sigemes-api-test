@@ -44,9 +44,13 @@ export class DashboardController {
 
     public async getFinancialReportSummary(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const { date: stringDate } = DashboardValidation.date.parse({ date: req.query.date });
-            const date = new Date(stringDate);
-            const financialReportSummary: FinancialReportSummary[] = await this.dashboardUsecase.getFinancialReportSummary(date);
+            const {
+                startDate: stringStartDate,
+                endDate: stringEndDate
+            } = DashboardValidation.financialReportDate.parse({ startDate: req.query.start_date, endDate: req.query.end_date });
+            const startDate = new Date(stringStartDate);
+            const endDate = new Date(stringEndDate);
+            const financialReportSummary: FinancialReportSummary[] = await this.dashboardUsecase.getFinancialReportSummary(startDate, endDate);
             const response: FinancialReportSummaryResponse[] = financialReportSummary.map(summary => FinancialReportSummaryResponse.fromEntity(summary));
             res.status(200).json(new BaseSuccessResponse(true, "Get financial report summary success", response));
         } catch (error) {

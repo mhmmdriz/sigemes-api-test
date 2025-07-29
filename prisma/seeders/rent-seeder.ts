@@ -1,44 +1,38 @@
-import { Rent, PrismaClient } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
 import bcrypt from "bcrypt";
 
 const prisma: PrismaClient = new PrismaClient();
 
 export async function seedRents(): Promise<void> {
-    const rentData: Rent[] = [
+
+    const rentData: Prisma.RentCreateManyInput[] = [
         {
-            id: 1,
             renterId: 2,
             guesthouseRoomPricingId: 1,
             slot: 1,
+            cityHallPricingId: null,
             startDate: new Date('2025-02-25'),
             endDate: new Date('2025-02-27'),
             renterGender: "laki_laki",
             status: "dikonfirmasi",
             createdAt: new Date(),
             updatedAt: new Date(),
-            cityHallPricingId: null,
-            checkIn: null,
-            checkOut: null
         },
         {
-            id: 2,
             renterId: 2,
             guesthouseRoomPricingId: 10,
+            cityHallPricingId: null,
             slot: 2,
             startDate: new Date('2025-02-25'),
             endDate: new Date('2025-02-27'),
             renterGender: "laki_laki",
             status: "selesai",
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            cityHallPricingId: null,
-            checkIn: null,
-            checkOut: null
+
         },
         {
-            id: 3,
             renterId: 1,
             guesthouseRoomPricingId: 6,
+            cityHallPricingId: null,
             slot: 1,
             startDate: new Date('2025-02-28'),
             endDate: new Date('2025-03-01'),
@@ -46,13 +40,10 @@ export async function seedRents(): Promise<void> {
             status: "dikonfirmasi",
             createdAt: new Date(),
             updatedAt: new Date(),
-            cityHallPricingId: null,
-            checkIn: null,
-            checkOut: null
         },
         {
-            id: 4,
             renterId: 1,
+            guesthouseRoomPricingId: null,
             cityHallPricingId: 1,
             slot: 1,
             startDate: new Date('2025-02-25'),
@@ -61,22 +52,21 @@ export async function seedRents(): Promise<void> {
             status: "selesai",
             createdAt: new Date(),
             updatedAt: new Date(),
-            guesthouseRoomPricingId: null,
-            checkIn: null,
-            checkOut: null
         },
     ];
 
-    for (let i = 0; i < 500; i++) {
-        const startDate = new Date(`2024-${Math.floor(Math.random() * 12) + 1}-${Math.floor(Math.random() * 28) + 1}`);
-        const endDate = new Date(startDate);
+    const initialDate = new Date(2016, 9, 1);
+
+    for (let i = 0; i < 1000; i++) {
+        const startDate: Date = new Date(initialDate);
+        startDate.setDate(initialDate.getDate() + (i * 3));
+        const endDate: Date = new Date(startDate);
         endDate.setDate(endDate.getDate() + 1);
 
         rentData.push({
-            id: i + 5,
             renterId: Math.floor(Math.random() * 100) + 5,
-            guesthouseRoomPricingId: Math.floor(Math.random() * 24) + 1,
-            cityHallPricingId: null,
+            guesthouseRoomPricingId: i % 2 === 0 ? Math.floor(Math.random() * 24) + 1 : null,
+            cityHallPricingId: i % 2 === 0 ? null : Math.floor(Math.random() * 3) + 1,
             slot: Math.floor(Math.random() * 2) + 1,
             startDate: startDate,
             endDate: endDate,
@@ -84,30 +74,6 @@ export async function seedRents(): Promise<void> {
             status: "selesai",
             createdAt: new Date(),
             updatedAt: new Date(),
-            checkIn: null,
-            checkOut: null
-        });
-    }
-
-    for (let i = 500; i < 1000; i++) {
-        const startDate = new Date(`2024-${Math.floor(Math.random() * 12) + 1}-${Math.floor(Math.random() * 28) + 1}`);
-        const endDate = new Date(startDate);
-        endDate.setDate(endDate.getDate() + 1);
-
-        rentData.push({
-            id: i + 5,
-            renterId: Math.floor(Math.random() * 100) + 5,
-            cityHallPricingId: Math.floor(Math.random() * 3) + 1,
-            guesthouseRoomPricingId: null,
-            slot: Math.floor(Math.random() * 2) + 1,
-            startDate: startDate,
-            endDate: endDate,
-            renterGender: i % 2 === 0 ? "laki_laki" : "perempuan",
-            status: "selesai",
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            checkIn: null,
-            checkOut: null
         });
     }
 
@@ -115,4 +81,5 @@ export async function seedRents(): Promise<void> {
         data: rentData,
     });
 
+    console.log("Rents seeded successfully");
 }

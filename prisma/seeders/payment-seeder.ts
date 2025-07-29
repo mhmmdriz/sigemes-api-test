@@ -47,7 +47,11 @@ export async function seedPayments(): Promise<void> {
         },
     ];
 
+    const startDate = new Date(2016, 9, 1);
     for (let i = 0; i < 1000; i++) {
+        const triggeredAt: Date = new Date(startDate);
+        triggeredAt.setDate(startDate.getDate() + (i * 3));
+
         paymentData.push({
             id: crypto.randomUUID(),
             rentId: i + 5,
@@ -55,8 +59,8 @@ export async function seedPayments(): Promise<void> {
             method: "bank_transfer",
             status: "dibayar",
             paymentGatewayToken: null,
-            paymentTriggeredAt: new Date(`2025-${Math.floor(Math.random() * 12) + 1}-${Math.floor(Math.random() * 28) + 1}`),
-            paymentConfirmedAt: new Date(`2025-${Math.floor(Math.random() * 12) + 1}-${Math.floor(Math.random() * 28) + 1}`)
+            paymentTriggeredAt: triggeredAt,
+            paymentConfirmedAt: triggeredAt
         });
     }
 
@@ -64,4 +68,5 @@ export async function seedPayments(): Promise<void> {
         data: paymentData,
     });
 
+    console.log("Payments seeded successfully");
 }

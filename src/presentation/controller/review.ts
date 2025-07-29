@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Review } from '../../domain/entity/review';
 import { ReviewUsecase } from '../../usecase/review';
-import { BaseSuccessResponse } from '../dto/response/base/base-success';
+import { BaseSuccessPaginatedResponse, BaseSuccessResponse } from '../dto/response/base/base-success';
 import { GetReviewResponse } from '../dto/response/review/get-review';
 import { ReviewValidation } from '../validation/review';
 import { File } from '../../domain/interface/library/file';
@@ -11,6 +11,8 @@ import { ReviewMedia } from '../../domain/entity/review-media';
 import { ReviewReply } from '../../domain/entity/review-reply';
 import { ReviewReplyRequest } from '../dto/request/review/review-reply';
 import { GetReviewReplyResponse } from '../dto/response/review/get-review-reply';
+import { Pagination } from '../../domain/entity/pagination';
+import { PaginationResponse } from '../dto/response/pagination/pagination';
 
 export class ReviewController {
     constructor(private reviewUsecase: ReviewUsecase) { }
@@ -18,9 +20,20 @@ export class ReviewController {
     public async getReviewsByCityHallId(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const { id: cityHallId } = ReviewValidation.id.parse({ id: Number(req.params.id) });
-            const reviews: Review[] = await this.reviewUsecase.getReviewsByCityHallId(cityHallId);
-            const reviewsResponse: GetReviewResponse[] = reviews.map(review => GetReviewResponse.fromEntity(review));
-            res.status(200).json(new BaseSuccessResponse(true, "Get all city hall reviews success", reviewsResponse));
+            const pagination = ReviewValidation.pagination.parse({
+                page: req.query.page ? Number(req.query.page) : undefined,
+                limit: req.query.limit ? Number(req.query.limit) : undefined,
+            });
+
+            const result: {
+                pagination: Pagination,
+                reviews: Review[]
+            } = await this.reviewUsecase.getReviewsByCityHallId(cityHallId, pagination.page, pagination.limit);
+
+            const paginationResponse: PaginationResponse = PaginationResponse.fromEntity(result.pagination);
+            const reviewsResponse: GetReviewResponse[] = result.reviews.map(review => GetReviewResponse.fromEntity(review));
+
+            res.status(200).json(new BaseSuccessPaginatedResponse(true, "Get all city hall reviews success", paginationResponse, reviewsResponse));
         } catch (error) {
             next(error);
         }
@@ -29,9 +42,20 @@ export class ReviewController {
     public async getReviewsByGuesthouseRoomId(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const { id: roomId } = ReviewValidation.id.parse({ id: Number(req.params.room_id) });
-            const reviews: Review[] = await this.reviewUsecase.getReviewsByGuesthouseRoomId(roomId);
-            const reviewsResponse: GetReviewResponse[] = reviews.map(review => GetReviewResponse.fromEntity(review));
-            res.status(200).json(new BaseSuccessResponse(true, "Get all guesthouse room reviews success", reviewsResponse));
+            const pagination = ReviewValidation.pagination.parse({
+                page: req.query.page ? Number(req.query.page) : undefined,
+                limit: req.query.limit ? Number(req.query.limit) : undefined,
+            });
+            
+            const result: {
+                pagination: Pagination,
+                reviews: Review[]
+            } = await this.reviewUsecase.getReviewsByGuesthouseRoomId(roomId, pagination.page, pagination.limit);
+
+            const paginationResponse: PaginationResponse = PaginationResponse.fromEntity(result.pagination);
+            const reviewsResponse: GetReviewResponse[] = result.reviews.map(review => GetReviewResponse.fromEntity(review));
+
+            res.status(200).json(new BaseSuccessPaginatedResponse(true, "Get all guesthouse room reviews success", paginationResponse, reviewsResponse));
         } catch (error) {
             next(error);
         }

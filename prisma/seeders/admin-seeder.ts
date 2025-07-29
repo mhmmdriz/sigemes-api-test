@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt'
 const prisma: PrismaClient = new PrismaClient()
 
 export async function seedAdmins(): Promise<void> {
-    const hashedPassword: string = await bcrypt.hash('password', 10)
+    const hashedPassword: string = await bcrypt.hash('password', 7);
 
     await prisma.admin.createMany({
         data: [

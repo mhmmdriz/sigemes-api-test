@@ -127,4 +127,6 @@ export async function seedGuesthouseRoomPricing(): Promise<void> {
             },
         ],
     });
+
+    console.log("Guesthouse room pricing seeded successfully");
 }

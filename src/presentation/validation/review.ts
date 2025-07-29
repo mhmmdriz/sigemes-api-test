@@ -6,6 +6,11 @@ export class ReviewValidation {
         id: z.number().min(1),
     });
 
+    public static pagination = z.object({
+        page: z.number().min(1).optional(),
+        limit: z.number().min(1).optional(),
+    });
+
     public static createReview = z.object({
         rating: z.number().min(1).max(5),
         comment: z.string(),
