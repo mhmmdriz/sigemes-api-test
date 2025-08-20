@@ -21,9 +21,9 @@ enum Gender {
 
 model Renter {
   id                     Int       @id @default(autoincrement())
-  email                  String    @unique @db.VarChar(320)
+  email                  String    @unique @db.VarChar(255)
   password               String    @db.VarChar(255)
-  fullname               String    @db.VarChar(100)
+  fullname               String    @db.VarChar(60)
   phoneNumber            String    @map("phone_number") @db.VarChar(15)
   gender                 Gender
   profilePicture         String    @default("http://localhost:8080/uploads/profile-pictures/default-picture.png") @map("profile_picture")
@@ -40,9 +40,9 @@ model Renter {
 
 model Admin {
   id             Int           @id @default(autoincrement())
-  email          String        @unique @db.VarChar(320)
+  email          String        @unique @db.VarChar(255)
   password       String        @db.VarChar(255)
-  fullname       String        @db.VarChar(100)
+  fullname       String        @db.VarChar(60)
   phoneNumber    String        @map("telephone_number") @db.VarChar(15)
   isSuperAdmin   Boolean       @default(false) @map("is_super_admin")
   profilePicture String        @default("http://localhost:8080/uploads/profile-pictures/default-picture.png") @map("profile_picture")
@@ -60,7 +60,7 @@ enum Status {
 
 model CityHall {
   id              Int               @id @default(autoincrement())
-  name            String            @db.VarChar(100)
+  name            String            @db.VarChar(50)
   description     String            @db.Text
   areaM2          Float             @map("area_m2") @db.DoublePrecision
   peopleCapacity  Int               @map("people_capacity") @db.Integer
@@ -99,7 +99,7 @@ model CityHallPricing {
 
 model Guesthouse {
   id              Int               @id @default(autoincrement())
-  name            String            @db.VarChar(100)
+  name            String            @db.VarChar(50)
   description     String            @db.Text
   facilities      String            @db.Text
   areaM2          Float             @map("area_m2") @db.DoublePrecision
@@ -189,6 +189,12 @@ model Rent {
   cityHallPricing         CityHallPricing?       @relation(fields: [cityHallPricingId], references: [id])
   payment                 Payment?
   review                  Review?
+
+  // Index untuk query guesthouseRoomPricingId + tanggal
+  @@index([guesthouseRoomPricingId, startDate, endDate], name: "idx_rent_guesthouse_date")
+
+  // Index untuk query cityHallPricingId + tanggal
+  @@index([cityHallPricingId, startDate, endDate], name: "idx_rent_cityhall_date")
 
   @@map("rents")
 }
