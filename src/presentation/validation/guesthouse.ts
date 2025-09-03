@@ -6,7 +6,7 @@ export class GuesthouseValidation {
     });
 
     public static createGuesthouse = z.object({
-        name: z.string().min(3),
+        name: z.string().min(3).max(50),
         description: z.string().min(10),
         facilities: z.string().min(3),
         area_m2: z.number().min(1),
@@ -17,7 +17,7 @@ export class GuesthouseValidation {
     });
 
     public static updateGuesthouse = z.object({
-        name: z.string().min(3).optional(),
+        name: z.string().min(3).max(50).optional(),
         description: z.string().min(10).optional(),
         facilities: z.string().min(3).optional(),
         area_m2: z.number().min(1).optional(),

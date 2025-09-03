@@ -6,7 +6,7 @@ export class GuesthouseRoomValidation {
     });
 
     public static createGuesthouseRoom = z.object({
-        name: z.string(),
+        name: z.string().min(3).max(50),
         type: z.enum(["vip", "standard"]),
         facilities: z.string(),
         total_slot: z.number().min(1),
@@ -20,7 +20,7 @@ export class GuesthouseRoomValidation {
     });
 
     public static updateGuesthouseRoom = z.object({
-        name: z.string(),
+        name: z.string().min(3).max(50),
         type: z.enum(["vip", "standard"]),
         facilities: z.string(),
         total_slot: z.number().min(1),

@@ -184,9 +184,9 @@ model Rent {
   status                  RentStatus             @default(pending) @map("status")
   createdAt               DateTime               @default(now()) @map("created_at")
   updatedAt               DateTime               @updatedAt @map("updated_at")
-  renter                  Renter                 @relation(fields: [renterId], references: [id])
-  guesthouseRoomPricing   GuesthouseRoomPricing? @relation(fields: [guesthouseRoomPricingId], references: [id])
-  cityHallPricing         CityHallPricing?       @relation(fields: [cityHallPricingId], references: [id])
+  renter                  Renter                 @relation(fields: [renterId], references: [id], onDelete: Cascade)
+  guesthouseRoomPricing   GuesthouseRoomPricing? @relation(fields: [guesthouseRoomPricingId], references: [id], onDelete: Cascade)
+  cityHallPricing         CityHallPricing?       @relation(fields: [cityHallPricingId], references: [id], onDelete: Cascade)
   payment                 Payment?
   review                  Review?
 
@@ -214,7 +214,7 @@ model Payment {
   paymentGatewayToken String?       @map("payment_gateway_token") @db.VarChar(255)
   paymentTriggeredAt  DateTime?     @map("payment_triggered_at")
   paymentConfirmedAt  DateTime?     @map("payment_confirmed_at")
-  Rent                Rent          @relation(fields: [rentId], references: [id])
+  Rent                Rent          @relation(fields: [rentId], references: [id], onDelete: Cascade)
 
   @@map("payments")
 }
@@ -226,7 +226,7 @@ model Review {
   comment     String        @db.Text
   createdAt   DateTime      @default(now()) @map("created_at")
   updatedAt   DateTime      @updatedAt @map("updated_at")
-  rent        Rent          @relation(fields: [rentId], references: [id])
+  rent        Rent          @relation(fields: [rentId], references: [id], onDelete: Cascade)
   reviewMedia ReviewMedia[]
   reviewReply ReviewReply?
 
@@ -249,8 +249,8 @@ model ReviewReply {
   comment   String   @db.Text
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  review    Review   @relation(fields: [reviewId], references: [id])
-  admin     Admin    @relation(fields: [adminId], references: [id])
+  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  admin     Admin    @relation(fields: [adminId], references: [id], onDelete: Cascade)
 
   @@map("review_replies")
 }

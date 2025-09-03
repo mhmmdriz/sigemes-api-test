@@ -6,7 +6,7 @@ export class CityHallValidation {
     });
 
     public static createCityHall = z.object({
-        name: z.string().min(3),
+        name: z.string().min(3).max(50),
         description: z.string(),
         area_m2: z.number().min(1),
         people_capacity: z.number().min(1),
@@ -14,7 +14,7 @@ export class CityHallValidation {
         latitude: z.number(),
         longitude: z.number(),
         status: z.enum(['tersedia', 'tidak_tersedia']),
-        contact_person: z.string().min(10),
+        contact_person: z.string().min(10).max(15),
         pricing: z.array(z.object({
             id: z.number().default(0),
             activity_type: z.string(),
@@ -25,7 +25,7 @@ export class CityHallValidation {
     });
 
     public static updateCityHall = z.object({
-        name: z.string().min(3),
+        name: z.string().min(3).max(50),
         description: z.string(),
         area_m2: z.number().min(1),
         people_capacity: z.number().min(1),
@@ -33,7 +33,7 @@ export class CityHallValidation {
         latitude: z.number(),
         longitude: z.number(),
         status: z.enum(['tersedia', 'tidak_tersedia']),
-        contact_person: z.string().min(10),
+        contact_person: z.string().min(10).max(15),
         pricing: z.array(z.object({
             id: z.number().min(0),
             activity_type: z.string(),
